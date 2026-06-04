@@ -88,3 +88,22 @@ func Get[T any](db Engine, key string) (*T, error) {
 	}
 	return &obj, nil
 }
+func Del(db Engine, key ...string) error {
+	ctx := context.Background()
+	if db.db1 != nil {
+		return db.db1.Del(ctx, key...).Err()
+	} else if db.db2 != nil {
+		return db.db2.Del(ctx, key...).Err()
+	}
+	return errors.New("redis db is nil")
+}
+
+func SetTimeout(db Engine, key string, expire time.Duration) error {
+	ctx := context.Background()
+	if db.db1 != nil {
+		return db.db1.Expire(ctx, key, expire).Err()
+	} else if db.db2 != nil {
+		return db.db2.Expire(ctx, key, expire).Err()
+	}
+	return errors.New("redis db is nil")
+}
